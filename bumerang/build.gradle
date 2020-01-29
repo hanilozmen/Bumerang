@@ -1,15 +1,17 @@
+apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'com.android.library'
+
+project.ext.versionName = '0.2.0'
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
 
-
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName project.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -27,4 +29,22 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.code.gson:gson:2.8.6'
+}
+
+// gradlew clean build bintrayUpload -PbintrayUser=username -PbintrayKey=apikey -PdryRun=false
+
+publish {
+
+    def groupProjectID = 'com.kokteyl.bumerang'
+    def artifactProjectID = 'bumerang'
+    def publishVersionID = project.versionName
+
+    userOrg = 'hanilozmen'
+    repoName = 'Bumerang'
+    groupId = groupProjectID
+    artifactId = artifactProjectID
+    publishVersion = publishVersionID
+    desc = 'Bumerang : A Model-Based Android All-In-One HTTP Client'
+    website = 'https://www.github.com/hanilozmen'
+
 }
