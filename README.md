@@ -1,4 +1,8 @@
-# Bumerang : A Model-Based Android All-In-One HTTP Client ( Ease of Use with Solidity ) 
+# BUMERANG
+
+## A Model-Based Android All-In-One HTTP Client 
+
+
 
 Bumerang is a Java based, Android focused HTTP client which is inspired by Retrofit and Volley. It has additional features like BumerangImageView and custom cache key/timeout values for network requests. We will always keep it simple. Main aim of this library is ease of use and solidity. It automatically converts http responses to your Java/Kotlin models(through Gson library), so you can focus on the functionality of your app. 
 
