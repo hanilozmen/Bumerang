@@ -1,28 +1,21 @@
 package com.kokteyl.android.bumerang.request;
 
 import com.google.gson.JsonElement;
-import com.kokteyl.android.bumerang.core.BumerangError;
 import com.kokteyl.android.bumerang.core.BumerangLog;
-import com.kokteyl.android.bumerang.response.Response;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Map;
-import java.util.Set;
 
 public class GetRequest<T> extends Request<T> {
 
-    GetRequest(String customCacheKey, String host, Map<String, String> headers, JsonElement params, int... timeoutValues) {
+    GetRequest(String customCacheKey, String host, Map<String, String> headers, JsonElement params, boolean dontCache, int... timeoutValues) {
         setCacheKey(customCacheKey);
         setParams(params);
         setHeaders(headers);
         String encodedParams = isParamsEmpty() ? "" : new String(getBody());
         setHost(host + encodedParams);
         setTimeout(timeoutValues);
+        setDontCache(dontCache);
     }
-
 
 
     @Override

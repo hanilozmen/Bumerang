@@ -23,7 +23,8 @@ public class BumerangTask<S extends Request<T>, T> extends AsyncTask<S, Integer,
     protected Response<T> doInBackground(S... requests) {
         request = requests[0];
         BumerangLog.d(request.toString());
-        cache = Bumerang.getFromCache(request.getCacheKey());
+        if(!request.dontCache())
+            cache = Bumerang.getFromCache(request.getCacheKey());
         if (cache != null && !cache.isExpired()) {
             response = cache.getResponse();
             response.setFromCache(true);

@@ -10,6 +10,7 @@ import com.kokteyl.android.bumerang.annotations.FormURLEncoded;
 import com.kokteyl.android.bumerang.annotations.GET;
 import com.kokteyl.android.bumerang.annotations.Header;
 import com.kokteyl.android.bumerang.annotations.Headers;
+import com.kokteyl.android.bumerang.annotations.NoCache;
 import com.kokteyl.android.bumerang.annotations.POST;
 import com.kokteyl.android.bumerang.annotations.PUT;
 import com.kokteyl.android.bumerang.annotations.Path;
@@ -44,6 +45,8 @@ public final class RequestParser {
 
             String path = getPath(reqType, method);
             boolean formUrlEncoded = method.getAnnotation(FormURLEncoded.class) != null;
+            boolean dontCache = method.getAnnotation(NoCache.class) != null;
+
 
             if (method.getAnnotation(BaseUrl.class) != null)
                 baseUrl = method.getAnnotation(BaseUrl.class).value();
@@ -80,26 +83,26 @@ public final class RequestParser {
                         headerMap = new HashMap<String, String>();
                     }
                     headerMap.put(((Header) annotation).value(), (String) parameters[index]);
-                }else if(annotation instanceof CustomCacheKey) {
+                } else if (annotation instanceof CustomCacheKey) {
                     customCacheKey = (String) parameters[index];
                 }
             }
-            return getRequest(reqType, baseUrl + path, headerMap, bodyJson, timeoutArray, formUrlEncoded,customCacheKey);
+            return getRequest(reqType, baseUrl + path, headerMap, bodyJson, timeoutArray, formUrlEncoded, dontCache, customCacheKey);
         } catch (Exception e) {
             BumerangLog.e(BumerangError.REQUEST_PARSE_EXCEPTION, e);
         }
         return null;
     }
 
-    private static <T> Request<T> getRequest(Class reqType, String host, Map<String, String> headerMap, JsonElement bodyJson, int[] timeoutArray, boolean formUrlEncoded, String customCacheKey) {
+    private static <T> Request<T> getRequest(Class reqType, String host, Map<String, String> headerMap, JsonElement bodyJson, int[] timeoutArray, boolean formUrlEncoded, boolean dontCache, String customCacheKey) {
         if (reqType == GET.class) {
-            return new GetRequest<T>(customCacheKey, host, headerMap, bodyJson, timeoutArray);
+            return new GetRequest<T>(customCacheKey, host, headerMap, bodyJson, dontCache, timeoutArray);
         } else if (reqType == POST.class) {
-            return new PostRequest<T>(customCacheKey, host, headerMap, bodyJson, formUrlEncoded, timeoutArray);
+            return new PostRequest<T>(customCacheKey, host, headerMap, bodyJson, dontCache, formUrlEncoded, timeoutArray);
         } else if (reqType == PUT.class) {
-            return new PutRequest<T>(customCacheKey, host, headerMap, bodyJson, timeoutArray);
+            return new PutRequest<T>(customCacheKey, host, headerMap, bodyJson, dontCache, timeoutArray);
         } else {
-            return new DeleteRequest<T>(customCacheKey, host, headerMap, bodyJson, timeoutArray);
+            return new DeleteRequest<T>(customCacheKey, host, headerMap, bodyJson, dontCache, timeoutArray);
         }
     }
 

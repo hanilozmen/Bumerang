@@ -2,29 +2,22 @@ package com.kokteyl.android.bumerang.request;
 
 import com.google.gson.JsonElement;
 import com.kokteyl.android.bumerang.core.Bumerang;
-import com.kokteyl.android.bumerang.core.BumerangError;
 import com.kokteyl.android.bumerang.core.BumerangLog;
-import com.kokteyl.android.bumerang.response.Response;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Map;
-import java.util.Set;
 
 public class PostRequest<T> extends Request<T> {
 
     private boolean mFormUrlEncoded;
 
-    PostRequest(String customCacheKey, String host, Map<String, String> headers, JsonElement params, boolean formUrlEncoded, int... timeoutValues) {
+    PostRequest(String customCacheKey, String host, Map<String, String> headers, JsonElement params, boolean dontCache ,boolean formUrlEncoded, int... timeoutValues) {
         setCacheKey(customCacheKey);
         setmFormUrlEncoded(formUrlEncoded);
         setHost(host);
         setParams(params);
         setHeaders(headers);
         setTimeout(timeoutValues);
+        setDontCache(dontCache);
     }
 
     private void setmFormUrlEncoded(boolean mFormUrlEncoded) {

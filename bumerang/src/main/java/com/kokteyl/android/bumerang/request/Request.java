@@ -40,6 +40,7 @@ public class Request<T> {
     private String host = "";
     int connectTimeoutMs, readTimeoutMs;
     private String cacheKey;
+    private boolean dontCache;
 
     public Response<T> performRequest(String requestType) {
         HttpURLConnection conn = null;
@@ -98,6 +99,7 @@ public class Request<T> {
     }
 
     private <T> HTTPCache<T> putToCache(Response<T> response, int cacheDuration) {
+        if(dontCache) return null;
         long localDate = System.currentTimeMillis();
         long localExpiresAt = localDate + (cacheDuration * 1000);
         if (cacheDuration > 0) {
@@ -134,6 +136,14 @@ public class Request<T> {
 
     public String getCacheKey() {
         return cacheKey;
+    }
+
+    void setDontCache(boolean dontCache) {
+        this.dontCache = dontCache;
+    }
+
+    public boolean dontCache() {
+        return dontCache;
     }
 
     void setTimeout(int... timeoutValues) {
@@ -222,7 +232,7 @@ public class Request<T> {
         }
     }
 
-    public String getTypeName(){
+    public String getTypeName() {
         throw new RuntimeException("type name is null");
     }
 
@@ -289,9 +299,8 @@ public class Request<T> {
 
     /**
      * @param node HttpURLConnection node
-     *
      * @return duration time in seconds
-     * **/
+     **/
     static int getCacheDurationFromHeader(HttpURLConnection node) {
         try {
             String cacheControl = node.getHeaderField("Cache-Control");

@@ -8,8 +8,8 @@ import java.util.Map;
 public class DeleteRequest<T> extends GetRequest<T> {
 
 
-    DeleteRequest(String customCacheKey, String host, Map<String, String> headers, JsonElement params, int... timeoutValues) {
-        super(customCacheKey, host, headers, params, timeoutValues);
+    DeleteRequest(String customCacheKey, String host, Map<String, String> headers, JsonElement params, boolean dontCache, int... timeoutValues) {
+        super(customCacheKey, host, headers, params, dontCache, timeoutValues);
     }
 
     @Override
