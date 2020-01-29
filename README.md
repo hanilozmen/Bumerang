@@ -1,8 +1,8 @@
-### Bumerang : A Model-Based Android All-In-One HTTP Client ( Ease of Use with Solidity ) 
+# Bumerang : A Model-Based Android All-In-One HTTP Client ( Ease of Use with Solidity ) 
 
 Bumerang is a Java based, Android focused HTTP client which is inspired by Retrofit and Volley. It has additional features like BumerangImageView and custom cache key/timeout values for network requests. We will always keep it simple. Main aim of this library is ease of use and solidity. It automatically converts http responses to your Java/Kotlin models(through Gson library), so you can focus on the functionality of your app. 
 
-#### Features
+## Features
 
 - GET, POST, PUT, DELETE requests supported.
 
@@ -26,9 +26,15 @@ Bumerang is a Java based, Android focused HTTP client which is inspired by Retro
 
   
 
-#### Setup
+## Setup
 
-###### Initialization of Bumerang:
+#### Initialization of Bumerang:
+
+Add it to your app's gradle file:
+
+```groovy
+implementation 'com.google.code.gson:gson:2.8.6'
+```
 
 It is good to initialize it in Application class:
 
@@ -54,7 +60,7 @@ bumerang = new Bumerang.Builder(getApplicationContext(),baseAPIUrl).executor(cus
 
 
 
-###### Rest API Contract:
+#### Rest API Contract:
 
 You need to create an interface class which can be considered as  a contract between your REST API and Android app. Sample API interface could be like the following:
 
@@ -93,7 +99,7 @@ You need to create an interface class which can be considered as  a contract bet
 
 
 
-###### Usage in Activity/Fragments:
+#### Usage in Activity/Fragments:
 
 You can see sample folder to see other usages. 
 
@@ -146,11 +152,9 @@ public class TestActivity extends Activity {
 
 
 
-#### Supported Annotations for your API interface
+## Supported Annotations for your API interface
 
-
-
-##### Method Annotations:
+#### Method Annotations:
 
 @BaseUrl
 
@@ -185,9 +189,7 @@ public Request testEndpoint(@Path("id") String id, ResponseListener<Response<Res
 public Request testEndpoint(@Path("id") String id, ResponseListener<Response<ResponseModel>> listener);
 ```
 
-
-
-##### Parameter Annotations:
+#### Parameter Annotations:
 
 @Body
 
