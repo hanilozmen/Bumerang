@@ -156,6 +156,23 @@ public class TestActivity extends Activity {
 
 
 
+# BumerangImageView
+
+```java
+BumerangImageView bumerangImageView = (BumerangImageView) findViewById(R.id.test_image);
+bumerangImageView.setImageUrl(urlString); // uses default fallback image
+bumerangImageView.setImageUrl(urlString,R.drawable.uncomplete_img);
+```
+
+```xml
+<com.kokteyl.android.bumerang.image.BumerangImageView
+    android:id="@+id/test_image"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="#d3d3d3"
+    android:scaleType="fitCenter" />
+```
+
 ## Supported Annotations for your API interface
 
 #### Method Annotations:
