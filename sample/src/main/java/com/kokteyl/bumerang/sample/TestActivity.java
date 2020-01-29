@@ -100,7 +100,9 @@ public class TestActivity extends Activity {
 
             @Override
             public void onError(Response<PostResponseModel> response) {
-
+                if(response.getCache() != null) {
+                    PostResponseModel cachedObj = response.getCache().getResponse(PostResponseModel.class);
+                }
             }
         });
         requestTextView.setText(request.toString());
