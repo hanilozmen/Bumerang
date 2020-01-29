@@ -34,10 +34,22 @@ Bumerang is a Java based, Android focused HTTP client which is inspired by Retro
 
 #### Initialization of Bumerang:
 
+Root level build.gradle file: 
+
+    allprojects {
+        repositories {
+            google()
+            jcenter()
+            maven {url 'https://dl.bintray.com/hanilozmen/Bumerang/'} // add it
+        }
+    }
+
+
 Add it to your app's gradle file:
 
 ```groovy
 implementation 'com.google.code.gson:gson:2.8.6'
+implementation 'com.kokteyl.bumerang:bumerang:0.2.0'
 ```
 
 It is good to initialize it in Application class:
