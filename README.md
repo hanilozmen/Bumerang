@@ -67,34 +67,34 @@ You need to create an interface class which can be considered as  a contract bet
 **IMPORTANT:** Last parameter always should be Response listener object.
 
 ```java
- @GET("todos/{id}")
-    public Request getItem(@CustomCacheKey String cacheKey,@Body RequestModel obj, @Path("id") String id, ResponseListener<Response<ResponseModel>> listener);
+@GET("todos/{id}")
+public Request getItem(@CustomCacheKey String cacheKey,@Body RequestModel obj, @Path("id") String id, ResponseListener<Response<ResponseModel>> listener);
 
-    @GET("todos")
-    public Request getItems(ResponseListener<Response<List<ResponseModel>>> listener);
+@GET("todos")
+public Request getItems(ResponseListener<Response<List<ResponseModel>>> listener);
 
-    @FormURLEncoded
-    @POST("posts")
-    public Request postItemForm(@Headers Map<String, String> headers, @Body RequestModel obj, ResponseListener<Response<PostResponseModel>> listener);
+@FormURLEncoded
+@POST("posts")
+public Request postItemForm(@Headers Map<String, String> headers, @Body RequestModel obj, ResponseListener<Response<PostResponseModel>> listener);
 
-    @FormURLEncoded //application/x-www-form-url-encoded
-    @POST("posts")
-    public Request postItemForm(@Headers Map<String, String> headers, @Body JsonObject obj, ResponseListener<Response<PostResponseModel>> listener);
+@FormURLEncoded //application/x-www-form-url-encoded
+@POST("posts")
+public Request postItemForm(@Headers Map<String, String> headers, @Body JsonObject obj, ResponseListener<Response<PostResponseModel>> listener);
 
-    //Default: application/json
-    @POST("posts")
-    public Request postItem(@Headers Map<String, String> headers, @Body JsonObject obj, ResponseListener<Response<PostResponseModel>> listener);
+//Default: application/json
+@POST("posts")
+public Request postItem(@Headers Map<String, String> headers, @Body JsonObject obj, ResponseListener<Response<PostResponseModel>> listener);
 
-    //Default: application/json
-    @POST("posts")
-    public Request postItem(@Headers Map<String, String> headers, @Body RequestModel obj, ResponseListener<Response<PostResponseModel>> listener);
+//Default: application/json
+@POST("posts")
+public Request postItem(@Headers Map<String, String> headers, @Body RequestModel obj, ResponseListener<Response<PostResponseModel>> listener);
 
-    //@Timeout(read = 200, connect = 200)
-    @PUT("posts/{id}")
-    public Request putItem(@Path("id") String id, ResponseListener<Response<ResponseModel>> listener);
+@Timeout(read = 3000, connect = 3000)
+@PUT("posts/{id}")
+public Request putItem(@Path("id") String id, ResponseListener<Response<ResponseModel>> listener);
 
-    @DELETE("posts/{id}")
-    public Request deleteItem(@Header("token") String headerValue, @Path("id") String id, ResponseListener<Response<ResponseModel>> listener);
+@DELETE("posts/{id}")
+public Request deleteItem(@Header("token") String headerValue, @Path("id") String id, ResponseListener<Response<ResponseModel>> listener);
 ```
 
 
@@ -110,7 +110,7 @@ public class TestActivity extends Activity {
      @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		testPost();
+        testPost();
         testGet();
     }
     
