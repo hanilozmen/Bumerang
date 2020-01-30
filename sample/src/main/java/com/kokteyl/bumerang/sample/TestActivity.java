@@ -50,8 +50,12 @@ public class TestActivity extends Activity {
         String imageUrl = "https://img.fanatik.com.tr/img/78/740x418/5c35f72c66a97cf10843a95f.jpg";
 
         // Default ImageView Usage
-        ImageView imageView = (ImageView) findViewById(R.id.imageview);
-        Bumerang.get().loadImage(imageView, imageUrl);
+        ImageView imageview = (ImageView) findViewById(R.id.imageview);
+        ImageView imageview2 = (ImageView) findViewById(R.id.imageview2);
+        ImageView imageview3 = (ImageView) findViewById(R.id.imageview3);
+        Bumerang.get().loadImage(imageview, imageUrl);
+        Bumerang.get().loadImage(imageview2, imageUrl);
+        Bumerang.get().loadImage(imageview3, imageUrl);
     }
 
     void testRequests() {

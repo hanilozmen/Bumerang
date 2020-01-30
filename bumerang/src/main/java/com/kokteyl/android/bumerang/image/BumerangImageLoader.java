@@ -135,11 +135,13 @@ public class BumerangImageLoader {
             imageViews.put(imageView, url);
             Bitmap bitmap = memoryCache.get(url);
             if (bitmap != null) {
+                BumerangLog.d("Image loaded from Cache");
                 if(animation == null)
                     imageView.setImageBitmap(bitmap);
                 else
                     animateImageView(imageView, bitmap, animation, animationDuration);
             } else if (memoryCache.cache != null && memoryCache.cache.containsKey(url)) {
+                BumerangLog.d("Image is loading by another view, waiting for it to complete");
                 //waiting to be load by another imageview. Skip
             } else {
                 memoryCache.put(url, null);
