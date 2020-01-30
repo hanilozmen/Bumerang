@@ -47,11 +47,7 @@ public class TestActivity extends Activity {
 
 
     void testImageView() {
-        String imageUrl = "https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg";
-
-        // Bumerang Image View Usage
-        BumerangImageView bumerangImageView = (BumerangImageView) findViewById(R.id.bumerangImageView);
-        bumerangImageView.loadImage(imageUrl);
+        String imageUrl = "https://img.fanatik.com.tr/img/78/740x418/5c35f72c66a97cf10843a95f.jpg";
 
         // Default ImageView Usage
         ImageView imageView = (ImageView) findViewById(R.id.imageview);

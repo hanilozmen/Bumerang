@@ -60,7 +60,7 @@ It is good to initialize it in Application class:
 public class MyApp extends Application {
     Bumerang bumerang;
     final String baseAPIUrl = "https://jsonplaceholder.typicode.com/"; 
-    /*                         should end with '/'                     */
+    /* should end with '/' */
 
     @Override
     public void onCreate() {
@@ -133,7 +133,7 @@ public class TestActivity extends Activity {
     }
     
     public void testPost() {
-   		Map<String, String> headerMap = new HashMap<String, String>();
+        Map<String, String> headerMap = new HashMap<String, String>();
         headerMap.put("token", "post json header");
         final Request request = api.postItem( headerMap, json, new ResponseListener<Response<PostResponseModel>>() {
             @Override
@@ -152,8 +152,7 @@ public class TestActivity extends Activity {
     }
     
     public void testGet() {
-        // Note: You don't need to reference for request object like in the post example.
-   		api.getItem("todo_1",null, "1", new ResponseListener<Response<ResponseModel>>() {
+        api.getItem("todo_1",null, "1", new ResponseListener<Response<ResponseModel>>() {
             @Override
             public void onSuccess(Response<ResponseModel> response) {
                 ResponseModel respModel = response.getResponse(ResponseModel.class);
@@ -173,11 +172,11 @@ public class TestActivity extends Activity {
 # Image Loader
 
 ```java
- String imageUrl = "https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg";
+String imageUrl = "https://img.fanatik.com.tr/img/78/740x418/5c35f72c66a97cf10843a95f.jpg";
 
-		// Default ImageView Usage
-        ImageView imageView = (ImageView) findViewById(R.id.imageview);
-        Bumerang.get().loadImage(imageView, imageUrl);
+// Default ImageView Usage
+ImageView imageView = (ImageView) findViewById(R.id.imageview);
+Bumerang.get().loadImage(imageView, imageUrl);
         
 ```
 
