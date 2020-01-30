@@ -1,7 +1,7 @@
 apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'com.android.library'
 
-project.ext.versionName = '0.2.0'
+project.ext.versionName = '0.2.1'
 
 android {
     compileSdkVersion 29
@@ -45,6 +45,6 @@ publish {
     artifactId = artifactProjectID
     publishVersion = publishVersionID
     desc = 'Bumerang : A Model-Based Android All-In-One HTTP Client'
-    website = 'https://www.github.com/hanilozmen'
+    website = 'https://github.com/hanilozmen/Bumerang'
 
 }

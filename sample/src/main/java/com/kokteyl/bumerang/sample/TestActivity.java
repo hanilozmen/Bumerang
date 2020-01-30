@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.google.gson.JsonObject;
 import com.kokteyl.android.bumerang.core.Bumerang;
 import com.kokteyl.android.bumerang.core.BumerangLog;
+import com.kokteyl.android.bumerang.image.BumerangImageLoader;
 import com.kokteyl.android.bumerang.image.BumerangImageView;
 import com.kokteyl.android.bumerang.request.Request;
 import com.kokteyl.android.bumerang.response.Response;

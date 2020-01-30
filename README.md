@@ -6,6 +6,8 @@
 
 Bumerang is a Java based, Android focused HTTP client which is inspired by Retrofit and Volley. It has additional features like BumerangImageView and custom cache key/timeout values for network requests. We will always keep it simple. Main aim of this library is ease of use and solidity. It automatically converts http responses to your Java/Kotlin models(through Gson library), so you can focus on the functionality of your app. 
 
+Note: Current status is beta now. Bumerang is open to new contributors.
+
 ## Features
 
 - GET, POST, PUT, DELETE requests supported.
@@ -34,13 +36,13 @@ Bumerang is a Java based, Android focused HTTP client which is inspired by Retro
 
 #### Initialization of Bumerang:
 
-Root level build.gradle file: 
+Library hosted by jcenter. Thanks to the Bintray. You need to have jcenter() repo inside root level build.gradle
 
     allprojects {
         repositories {
-            google()
+            ...
             jcenter()
-            maven {url 'https://dl.bintray.com/hanilozmen/Bumerang/'} // add it
+            ...
         }
     }
 
@@ -49,7 +51,7 @@ Add it to your app's gradle file:
 
 ```groovy
 implementation 'com.google.code.gson:gson:2.8.6'
-implementation 'com.kokteyl.bumerang:bumerang:0.2.0'
+implementation 'com.kokteyl.bumerang:bumerang:0.2.1'
 ```
 
 It is good to initialize it in Application class:
