@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.kokteyl.android.bumerang.image.BumerangImageLoader;
 import com.kokteyl.android.bumerang.request.Request;
 import com.kokteyl.android.bumerang.request.RequestParser;
 import com.kokteyl.android.bumerang.response.Cacheable;
@@ -27,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class Bumerang {
     private String mBaseUrl;
-    private Executor mExecutor;
+    private ThreadPoolExecutor mExecutor;
     private static Bumerang mInstance;
     private Context mContext;
     private Gson mGson;
@@ -61,7 +63,7 @@ public final class Bumerang {
         gson();
     }
 
-    private Bumerang(String baseUrl, Executor executor, Context context) {
+    private Bumerang(String baseUrl, ThreadPoolExecutor executor, Context context) {
         mBaseUrl = baseUrl;
         mContext = context.getApplicationContext();
         mHttpCache = getHttpCache();
@@ -82,6 +84,7 @@ public final class Bumerang {
 
     private BumerangLifecycleObserver.Listener getListener() {
         return new BumerangLifecycleObserver.Listener() {
+
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 
@@ -162,7 +165,7 @@ public final class Bumerang {
         return null;
     }
 
-    private static Bumerang set(String baseUrl, Executor executor, Gson gsonExternal, Context context) {
+    private static Bumerang set(String baseUrl, ThreadPoolExecutor executor, Gson gsonExternal, Context context) {
         if (mInstance == null) {
             synchronized (Bumerang.class) {
                 if (mInstance == null) {
@@ -174,7 +177,7 @@ public final class Bumerang {
         return mInstance;
     }
 
-    public Executor getExecutor() {
+    public ThreadPoolExecutor getExecutor() {
         return mExecutor;
     }
 
@@ -202,9 +205,50 @@ public final class Bumerang {
         return null;
     }
 
+    /* Image Loading Part */
+    public void loadImage(ImageView imageView, String url) {
+        if (context() == null || imageView == null) return;
+        BumerangImageLoader.Core.getInstance(context()).displayImage(imageView, url);
+    }
+
+    public void loadImage(ImageView imageView, String url, BumerangImageLoader.ImageAnimation animation) {
+        if (context() == null || imageView == null) return;
+        BumerangImageLoader.Core.getInstance(context()).displayImage(imageView, url, animation);
+    }
+
+    public void loadImage(ImageView imageView, String url, BumerangImageLoader.ImageAnimation animation, int animationDuration) {
+        if (context() == null || imageView == null) return;
+        BumerangImageLoader.Core.getInstance(context()).displayImage(imageView, url, animation, animationDuration);
+    }
+
+    /* Image Loading Part */
+
+
+    public void cancelAllImageTasks() {
+        try {
+            if (context() != null)
+                BumerangImageLoader.Core.getInstance(context()).clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void cancelAllRequestTasks() {
+        try {
+            ThreadPoolExecutor executor = getExecutor();
+            if (executor != null && !executor.isShutdown())
+                executor.shutdown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
     public static final class Builder {
         private String mBaseUrl;
-        private Executor mExecutor;
+        private ThreadPoolExecutor mExecutor;
         private Gson mGson;
         private Context mContext;
 
@@ -214,7 +258,7 @@ public final class Bumerang {
             mBaseUrl = baseUrl;
         }
 
-        public Builder executor(Executor executor) {
+        public Builder executor(ThreadPoolExecutor executor) {
             mExecutor = executor;
             return this;
         }

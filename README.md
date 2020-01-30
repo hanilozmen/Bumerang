@@ -51,7 +51,7 @@ Add it to your app's gradle file:
 
 ```groovy
 implementation 'com.google.code.gson:gson:2.8.6'
-implementation 'com.kokteyl.bumerang:bumerang:0.2.1'
+implementation 'com.kokteyl.bumerang:bumerang:0.2.2'
 ```
 
 It is good to initialize it in Application class:
@@ -170,22 +170,18 @@ public class TestActivity extends Activity {
 
 
 
-# BumerangImageView
+# Image Loader
 
 ```java
-BumerangImageView bumerangImageView = (BumerangImageView) findViewById(R.id.test_image);
-bumerangImageView.setImageUrl(urlString); // uses default fallback image
-bumerangImageView.setImageUrl(urlString,R.drawable.uncomplete_img);
+ String imageUrl = "https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg";
+
+		// Default ImageView Usage
+        ImageView imageView = (ImageView) findViewById(R.id.imageview);
+        Bumerang.get().loadImage(imageView, imageUrl);
+        
 ```
 
-```xml
-<com.kokteyl.android.bumerang.image.BumerangImageView
-    android:id="@+id/test_image"
-    android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:background="#d3d3d3"
-    android:scaleType="fitCenter" />
-```
+
 
 ## Supported Annotations for your API interface
 

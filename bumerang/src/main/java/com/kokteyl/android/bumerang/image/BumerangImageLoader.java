@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.kokteyl.android.bumerang.R;
+import com.kokteyl.android.bumerang.core.BumerangLog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,11 +32,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /*
-* Written by hanilozmen
-*
-* It is written by hanilozmen completely.
-*
-* */
+ * Written by hanilozmen
+ *
+ * */
 public class BumerangImageLoader {
 
     private static final String CACHE_DIR_NAME = "qumpara_sdk_cache";
@@ -45,6 +44,11 @@ public class BumerangImageLoader {
     private static int ANIMATION_DURATION = 300;
 
     private final static Object singletonLock = new Object();
+
+    public enum ImageAnimation {
+        NO_ANIMATION,
+        FADE_IN
+    }
 
     public static class Core {
         protected ExecutorService executorService;
@@ -62,36 +66,36 @@ public class BumerangImageLoader {
                 imageViews.clear();
                 imageListener = null;
 
-            }catch (Exception e) {
+            } catch (Exception e) {
 
             }
         }
 
         public static Core getInstance(Context context) {
-            if(mInstance == null) {
+            if (mInstance == null) {
                 synchronized (singletonLock) {
                     mInstance = new Core(context);
                     return mInstance;
                 }
-            }else {
+            } else {
                 return mInstance;
             }
         }
 
         private Core(Context context) {
-            memoryCache =  new MemoryCache();
+            memoryCache = new MemoryCache();
             fileCache = new FileCache(context);
-            imageViews  = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
-            executorService = new ThreadPoolExecutor(10, 50,10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20));
+            imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
+            executorService = new ThreadPoolExecutor(10, 50, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20));
             imageListener = new ImageListener() {
                 @Override
                 public void success(String url) {
-                    if(!imageViews.containsValue(url) || url == null) return;
+                    if (!imageViews.containsValue(url) || url == null) return;
                     for (Entry<ImageView, String> entry : imageViews.entrySet()) {
-                        if(url.equals(entry.getValue())){
+                        if (url.equals(entry.getValue())) {
                             final Bitmap bitmap = memoryCache.get(url);
                             final ImageView imageView = entry.getKey();
-                            if( imageView == null|| bitmap ==null)
+                            if (imageView == null || bitmap == null)
                                 continue;
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
@@ -106,15 +110,14 @@ public class BumerangImageLoader {
 
                 @Override
                 public void fail(String url) {
-                    if(!imageViews.containsValue(url) || url == null) {
-                        Log.i("ANIL","fail url not found: " + url);
+                    if (!imageViews.containsValue(url) || url == null) {
+                        BumerangLog.w("fail url not found: " + url);
                         return;
                     }
                     for (Entry<ImageView, String> entry : imageViews.entrySet()) {
-                        Log.i("ANIL",entry.getValue());
-                        if(url.equals(entry.getValue())){
+                        if (url.equals(entry.getValue())) {
                             ImageView imageView = entry.getKey();
-                            if( imageView == null)
+                            if (imageView == null)
                                 continue;
                             imageView.setImageResource(R.drawable.uncomplete_img);
                         }
@@ -123,56 +126,33 @@ public class BumerangImageLoader {
             };
         }
 
-        public enum ImageAnimation {
-            NO_ANIMATION,
-            FADE_IN
+        //TODO final int stub_id=R.drawable.ic_launcher;
+        public void displayImage(ImageView imageView, String url) {
+            displayImage(imageView, url, null, -1);
         }
 
-        //TODO final int stub_id=R.drawable.ic_launcher;
-        private void DisplayImage(String url, ImageView imageView) {
+        public void displayImage(ImageView imageView, String url, ImageAnimation animation, int animationDuration) {
             imageViews.put(imageView, url);
             Bitmap bitmap = memoryCache.get(url);
             if (bitmap != null) {
-                imageView.setImageBitmap(bitmap);
-            } else if(memoryCache.cache != null && memoryCache.cache.containsKey(url)) {
+                if(animation == null)
+                    imageView.setImageBitmap(bitmap);
+                else
+                    animateImageView(imageView, bitmap, animation, animationDuration);
+            } else if (memoryCache.cache != null && memoryCache.cache.containsKey(url)) {
                 //waiting to be load by another imageview. Skip
-            }else {
+            } else {
                 memoryCache.put(url, null);
                 queuePhoto(url, imageView, null);
             }
         }
 
-        public void DisplayImage(String url, ImageView imageView, boolean fadeIn) {
-            if(fadeIn)
-                displayImageWithAnimation(url, imageView, ImageAnimation.FADE_IN);
-            else
-                DisplayImage(url, imageView);
+
+        public void displayImage(ImageView imageView, String url, ImageAnimation animation) {
+            displayImage(imageView, url, animation, ANIMATION_DURATION);
         }
 
-        public void DisplayImage(String url, ImageView imageView, ImageAnimation animation, int animationDuration) {
-            ANIMATION_DURATION = animationDuration;
-            displayImageWithAnimation(url, imageView, animation);
-        }
-
-        public void DisplayImage(String url, ImageView imageView, ImageAnimation animation) {
-            displayImageWithAnimation(url, imageView, animation);
-        }
-
-        public void displayImageWithAnimation(String url, ImageView imageView, ImageAnimation animation) {
-            try {
-                imageViews.put(imageView, url);
-                Bitmap bitmap = memoryCache.get(url);
-                if (bitmap != null) {
-                    animateImageView(imageView, bitmap, animation);
-                } else {
-                    queuePhoto(url, imageView, animation);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void animateImageView(ImageView imageView, Bitmap bitmap, ImageAnimation animation) {
+        private void animateImageView(ImageView imageView, Bitmap bitmap, ImageAnimation animation, int animationDuration) {
             if (animation == null) {
                 imageView.setImageBitmap(bitmap);
                 return;
@@ -181,7 +161,7 @@ public class BumerangImageLoader {
                 case FADE_IN:
                     imageView.setAlpha(0f);
                     imageView.setImageBitmap(bitmap);
-                    imageView.animate().setDuration(ANIMATION_DURATION).alpha(1f).start();
+                    imageView.animate().setDuration(animationDuration).alpha(1f).start();
                     break;
                 default:
                     imageView.setImageBitmap(bitmap);
@@ -193,7 +173,7 @@ public class BumerangImageLoader {
             PhotoToLoad p = new PhotoToLoad(url, imageView);
             try {
                 executorService.submit(new PhotosLoader(p, animation));
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -215,10 +195,10 @@ public class BumerangImageLoader {
                 conn.setReadTimeout(READ_TIMEOUT);
                 conn.setDoInput(true);
                 conn.connect();
-                if(conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     InputStream is = conn.getInputStream();
                     OutputStream os = new FileOutputStream(f);
-                    CopyStream(is,os);
+                    CopyStream(is, os);
                     os.close();
                     bitmap = decodeFile(f);
                 }
@@ -227,12 +207,12 @@ public class BumerangImageLoader {
                     memoryCache.clear();
                     imageViews.clear();
                 }
-                if(ex instanceof SocketTimeoutException){
-                    Log.w("QUMPARA_OFFERWALL_IMAGE", String.format(Locale.ENGLISH,"Socket timeout exception while downloading: %s", url));
+                if (ex instanceof SocketTimeoutException) {
+                    Log.w("QUMPARA_OFFERWALL_IMAGE", String.format(Locale.ENGLISH, "Socket timeout exception while downloading: %s", url));
                 }
                 return null;
-            }finally {
-                if(conn!= null)
+            } finally {
+                if (conn != null)
                     conn.disconnect();
                 return bitmap;
             }
@@ -293,11 +273,11 @@ public class BumerangImageLoader {
                 if (imageViewReused(photoToLoad))
                     return;
                 Bitmap bmp = getBitmap(photoToLoad.url);
-                if(photoToLoad.imageView.getContext() == null) return;
-                if(bmp != null ) {
+                if (photoToLoad.imageView.getContext() == null) return;
+                if (bmp != null) {
                     memoryCache.put(photoToLoad.url, bmp);
                     Core.getInstance(photoToLoad.imageView.getContext()).imageListener.success(photoToLoad.url);
-                }else {
+                } else {
                     Core.getInstance(photoToLoad.imageView.getContext()).imageListener.fail(photoToLoad.url);
                 }
 
@@ -307,10 +287,9 @@ public class BumerangImageLoader {
         boolean imageViewReused(PhotoToLoad photoToLoad) {
             String tag = imageViews.get(photoToLoad.imageView);
             if (tag == null || !tag.equals(photoToLoad.url)) {
-                Log.i("ANIL", "imageView reused tag: "  + tag);
+                BumerangLog.d("imageView reused tag " + tag);
                 return true;
             }
-            Log.i("ANIL", "imageView not reused: "  + tag);
             return false;
         }
 
@@ -325,14 +304,14 @@ public class BumerangImageLoader {
                 bitmap = b;
                 photoToLoad = p;
                 animation = a;
-                if( p.imageView.getContext() !=null)
+                if (p.imageView.getContext() != null)
                     context = p.imageView.getContext();
             }
 
             public void run() {
                 if (imageViewReused(photoToLoad))
                     return;
-                if(bitmap != null && photoToLoad.imageView != null)
+                if (bitmap != null && photoToLoad.imageView != null)
                     Core.getInstance(context).imageListener.success(photoToLoad.url);
                 else
                     Core.getInstance(context).imageListener.fail(photoToLoad.url);
@@ -372,8 +351,8 @@ public class BumerangImageLoader {
         public void clear(File[] files) {
             if (files == null)
                 return;
-            for (File f : files){
-                if(f.exists())
+            for (File f : files) {
+                if (f.exists())
                     f.delete();
             }
 
@@ -481,6 +460,7 @@ public class BumerangImageLoader {
 
     private interface ImageListener {
         void success(String url);
+
         void fail(String url);
     }
 

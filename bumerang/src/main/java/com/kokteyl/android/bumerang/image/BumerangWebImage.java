@@ -9,8 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class BumerangWebImage implements BumerangImage {
-    private static final int CONNECT_TIMEOUT = 8000;
-    private static final int READ_TIMEOUT = 16000;
+    private static  int CONNECT_TIMEOUT = 8000;
+    private static  int READ_TIMEOUT = 16000;
 
     private static BumerangWebImageCache bumerangWebImageCache;
 

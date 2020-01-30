@@ -3,12 +3,15 @@ package com.kokteyl.bumerang.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.kokteyl.android.bumerang.core.Bumerang;
 import com.kokteyl.android.bumerang.core.BumerangLog;
 import com.kokteyl.android.bumerang.image.BumerangImageLoader;
+import com.kokteyl.android.bumerang.image.BumerangImageTask;
 import com.kokteyl.android.bumerang.image.BumerangImageView;
 import com.kokteyl.android.bumerang.request.Request;
 import com.kokteyl.android.bumerang.response.Response;
@@ -44,8 +47,15 @@ public class TestActivity extends Activity {
 
 
     void testImageView() {
-        BumerangImageView bumerangImageView = (BumerangImageView) findViewById(R.id.test_image);
-        bumerangImageView.setImageUrl("https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg");
+        String imageUrl = "https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg";
+
+        // Bumerang Image View Usage
+        BumerangImageView bumerangImageView = (BumerangImageView) findViewById(R.id.bumerangImageView);
+        bumerangImageView.loadImage(imageUrl);
+
+        // Default ImageView Usage
+        ImageView imageView = (ImageView) findViewById(R.id.imageview);
+        Bumerang.get().loadImage(imageView, imageUrl);
     }
 
     void testRequests() {
