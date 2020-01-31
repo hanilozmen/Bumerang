@@ -1,6 +1,5 @@
 package com.kokteyl.bumerang.sample;
 
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +28,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class TestActivity extends Activity {
+
     TextView requestTextView;
     TextView responseTextView;
 
@@ -42,13 +42,10 @@ public class TestActivity extends Activity {
         responseTextView = findViewById(R.id.response);
         testRequests();
         testImageView();
-
     }
-
 
     void testImageView() {
         String imageUrl = "https://img.fanatik.com.tr/img/78/740x418/5c35f72c66a97cf10843a95f.jpg";
-
         // Default ImageView Usage
         ImageView imageview = (ImageView) findViewById(R.id.imageview);
         ImageView imageview2 = (ImageView) findViewById(R.id.imageview2);
@@ -63,7 +60,6 @@ public class TestActivity extends Activity {
         JsonObject sampleJson = new JsonObject();
         sampleJson.addProperty("title", "JsonTit");
         sampleJson.addProperty("year", 0);
-
         getItem(model);
         getItems();
         postItem(null, sampleJson);
@@ -74,14 +70,14 @@ public class TestActivity extends Activity {
     }
 
     void getItem(RequestModel model) {
-        Request request = api.getItem("todo_1",null, "1", new ResponseListener<Response<ResponseModel>>() {
+        Request request = api.getItem("todo_1", null, "1", new ResponseListener<Response<ResponseModel>>() {
             @Override
             public void onSuccess(Response<ResponseModel> response) {
+                ResponseModel respModel = response.getResponse();
             }
 
             @Override
             public void onError(Response<ResponseModel> response) {
-
             }
         });
     }
@@ -90,11 +86,11 @@ public class TestActivity extends Activity {
         api.getItems(new ResponseListener<Response<List<ResponseModel>>>() {
             @Override
             public void onSuccess(Response<List<ResponseModel>> response) {
+                List<ResponseModel> respModel = response.getResponse();
             }
 
             @Override
             public void onError(Response<List<ResponseModel>> response) {
-
             }
         });
     }
@@ -102,17 +98,17 @@ public class TestActivity extends Activity {
     void postItem(RequestModel model, final JsonObject json) {
         Map<String, String> headerMap = new HashMap<String, String>();
         headerMap.put("token", "post json header");
-        final Request request = api.postItem( headerMap, json, new ResponseListener<Response<PostResponseModel>>() {
+        final Request request = api.postItem(headerMap, json, new ResponseListener<Response<PostResponseModel>>() {
             @Override
             public void onSuccess(Response<PostResponseModel> response) {
-                PostResponseModel respModel = response.getResponse(PostResponseModel.class);
+                PostResponseModel respModel = response.getResponse();
                 responseTextView.setText(response.toString());
             }
 
             @Override
             public void onError(Response<PostResponseModel> response) {
-                if(response.getCache() != null) {
-                    PostResponseModel cachedObj = response.getCache().getResponse(PostResponseModel.class);
+                if (response.getCache() != null) {
+                    PostResponseModel cachedObj = response.getCache().getResponse();
                 }
             }
         });
@@ -125,7 +121,7 @@ public class TestActivity extends Activity {
         api.postItemForm(headerMap, model, new ResponseListener<Response<PostResponseModel>>() {
             @Override
             public void onSuccess(Response<PostResponseModel> response) {
-                PostResponseModel respModel = response.getResponse(PostResponseModel.class);
+                PostResponseModel respModel = response.getResponse();
                 BumerangLog.i(respModel.toString());
             }
 
@@ -155,10 +151,7 @@ public class TestActivity extends Activity {
 
             @Override
             public void onError(Response<ResponseModel> response) {
-
             }
         });
     }
-
-
 }

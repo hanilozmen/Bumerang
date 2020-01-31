@@ -1,10 +1,8 @@
 package com.kokteyl.android.bumerang.response;
 
-import com.google.gson.reflect.TypeToken;
 import com.kokteyl.android.bumerang.core.Bumerang;
 import com.kokteyl.android.bumerang.core.BumerangError;
 import com.kokteyl.android.bumerang.core.BumerangLog;
-import com.kokteyl.android.bumerang.core.BumerangPrefs;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
@@ -13,10 +11,12 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Response<T> {
+
     private ResponseItem errorRawItem;
     private ResponseItem successRawItem;
     private Map<String, List<String>> responseHeaders;
     private Response<T> cachedResponse;
+    private ResponseListener mListener;
     private boolean isFromCache;
 
     public static int MIN_SUCCESS_HTTP_CODE = 200;
@@ -30,13 +30,16 @@ public class Response<T> {
         return isSuccess() && successRawItem.httpCode == 200;
     }
 
-
     public boolean isFromCache() {
         return isFromCache;
     }
 
     public void setFromCache(boolean fromCache) {
         isFromCache = fromCache;
+    }
+
+    public void setListener(ResponseListener listener) {
+        mListener = listener;
     }
 
     private Response() {}
@@ -61,10 +64,11 @@ public class Response<T> {
         this.cachedResponse = cachedResponse;
     }
 
-    public T getResponse(Type t) {
+    public T getResponse() {
         if (successRawItem == null) return null;
         try {
-            return Bumerang.get().gson().fromJson(successRawItem.getRawResponse(), t);
+            Type responseClassType = mListener.getResponseClassType();
+            return Bumerang.get().gson().fromJson(successRawItem.getRawResponse(), responseClassType);
         } catch (Exception e) {
             BumerangLog.w("Error while converting response body!", e);
             return null;
@@ -72,7 +76,7 @@ public class Response<T> {
     }
 
     public Response<T> getCache() {
-       return this.cachedResponse;
+        return this.cachedResponse;
     }
 
     public ResponseItem getSuccessRawItem() {
@@ -89,6 +93,7 @@ public class Response<T> {
     }
 
     public static class ResponseItem {
+
         String rawResponse;
         int httpCode;
         Throwable exception;
@@ -126,6 +131,4 @@ public class Response<T> {
             this.exception = exception;
         }
     }
-
-
 }
