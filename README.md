@@ -4,7 +4,7 @@
 
 
 
-Bumerang is a Java based, Android focused HTTP client which is inspired by Retrofit and Volley. It has additional features like BumerangImageView and custom cache key/timeout values for network requests. We will always keep it simple. Main aim of this library is ease of use and solidity. It automatically converts http responses to your Java/Kotlin models(through Gson library), so you can focus on the functionality of your app. 
+Bumerang is a Java based, Android HTTP client which is inspired by Retrofit and Volley. It has additional features like ImageView loading and custom cache key/timeout values for network requests. Main aim of this library is ease of use with solidity. It automatically converts http responses to your Java/Kotlin models (through Gson library), so you can focus on the functionality of your app. 
 
 Note: Current status is beta now. Bumerang is open to new contributors.
 
@@ -138,14 +138,14 @@ public class TestActivity extends Activity {
         final Request request = api.postItem( headerMap, json, new ResponseListener<Response<PostResponseModel>>() {
             @Override
             public void onSuccess(Response<PostResponseModel> response) {
-                PostResponseModel respModel = response.getResponse(PostResponseModel.class);
+                PostResponseModel respModel = response.getResponse();
             }
 
             @Override
             public void onError(Response<PostResponseModel> response) {
                 // Distinctive feature! You can use your last successful response object
                 if(response.getCache() != null) {
-                   PostResponseModel cachedObj = response.getCache().getResponse(PostResponseModel.class);
+                   PostResponseModel cachedObj = response.getCache().getResponse();
                 }
             }
         });
@@ -155,7 +155,7 @@ public class TestActivity extends Activity {
         api.getItem("todo_1",null, "1", new ResponseListener<Response<ResponseModel>>() {
             @Override
             public void onSuccess(Response<ResponseModel> response) {
-                ResponseModel respModel = response.getResponse(ResponseModel.class);
+                ResponseModel respModel = response.getResponse();
             }
 
             @Override
