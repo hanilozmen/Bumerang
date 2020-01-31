@@ -2,16 +2,11 @@ package com.kokteyl.bumerang.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.kokteyl.android.bumerang.core.Bumerang;
-import com.kokteyl.android.bumerang.core.BumerangLog;
-import com.kokteyl.android.bumerang.image.BumerangImageLoader;
-import com.kokteyl.android.bumerang.image.BumerangImageTask;
-import com.kokteyl.android.bumerang.image.BumerangImageView;
 import com.kokteyl.android.bumerang.request.Request;
 import com.kokteyl.android.bumerang.response.Response;
 import com.kokteyl.android.bumerang.response.ResponseListener;
@@ -24,7 +19,6 @@ import com.kokteyl.bumerang.sample.network.ResponseModel;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class TestActivity extends Activity {
@@ -122,7 +116,6 @@ public class TestActivity extends Activity {
             @Override
             public void onSuccess(Response<PostResponseModel> response) {
                 PostResponseModel respModel = response.getResponse();
-                BumerangLog.i(respModel.toString());
             }
 
             @Override

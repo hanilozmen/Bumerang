@@ -43,11 +43,12 @@ public class BumerangTask<S extends Request<T>, T> extends AsyncTask<S, Integer,
     protected void onPostExecute(Response<T> response) {
         if (response == null) return;
         if (response.isSuccess()) {
-            BumerangLog.d(String.format(Locale.ENGLISH, "<----- %s %s Success Response: %s %s", request.getTypeName(), request.getHost(), getCacheRemainingTime(), response.toString()));
+            String cacheExpireInfo = response.isFromCache() ? getCacheRemainingTime() : "";
+            BumerangLog.d(String.format(Locale.ENGLISH, "<----- %s %s Success Response %s %s", request.getTypeName(), request.getHost(), cacheExpireInfo, response.toString()));
             listener.onSuccess(response);
         } else {
             response.setFromCache(true);
-            BumerangLog.v(String.format(Locale.ENGLISH, "<----- %s %s Response: %s %s%s", request.getTypeName(), request.getHost(), getCacheRemainingTime(), response.toString(), cache == null ? "" : "\n" + cache.toString()));
+            BumerangLog.v(String.format(Locale.ENGLISH, "<----- %s %s Response %s %s%s", request.getTypeName(), request.getHost(), getCacheRemainingTime(), response.toString(), cache == null ? "" : "\n" + cache.toString()));
             listener.onError(response);
         }
     }
@@ -58,7 +59,7 @@ public class BumerangTask<S extends Request<T>, T> extends AsyncTask<S, Integer,
 
     private String getCacheRemainingTime() {
         int remainingExpirationMs = cache == null ? 0 : cache.getRemainingExpirationTime();
-        if (remainingExpirationMs == 0) return "";
+        if (remainingExpirationMs <= 0) return "";
         int hours = remainingExpirationMs / 3600;
         int minutes = (remainingExpirationMs % 3600) / 60;
         int seconds = remainingExpirationMs % 60;

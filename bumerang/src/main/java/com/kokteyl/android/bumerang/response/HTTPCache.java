@@ -67,7 +67,7 @@ public class HTTPCache<T> implements Cacheable {
 
     @Override
     public boolean isExpired() {
-        return getExpiresAt() - System.currentTimeMillis() < 0;
+        return getExpiresAt() - System.currentTimeMillis() <= 0;
     }
 
     @Override
