@@ -1,6 +1,7 @@
 # BUMERANG
 
-## A Model-Based Android All-In-One HTTP Client 
+## A Type-Safe, Model-Based All-In-One Android HTTP Client / ImageLoader
+
 
 
 
