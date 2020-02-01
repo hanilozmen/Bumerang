@@ -52,7 +52,7 @@ Add it to your app's gradle file:
 
 ```groovy
 implementation 'com.google.code.gson:gson:2.8.6'
-implementation 'com.kokteyl.bumerang:bumerang:0.2.2'
+implementation 'com.kokteyl.bumerang:bumerang:0.3.0'
 ```
 
 It is good to initialize it in Application class:
