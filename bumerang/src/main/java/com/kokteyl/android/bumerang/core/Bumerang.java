@@ -233,7 +233,9 @@ public final class Bumerang {
         }
     }
 
-    public void cancelAllRequestTasks() {
+
+    // TODO should not be public. We need to detect app exit
+    private void cancelAllRequestTasks() {
         try {
             ThreadPoolExecutor executor = getExecutor();
             if (executor != null && !executor.isShutdown())
