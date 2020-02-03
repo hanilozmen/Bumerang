@@ -52,21 +52,21 @@ Add it to your app's gradle file:
 
 ```groovy
 implementation 'com.google.code.gson:gson:2.8.6'
-implementation 'com.kokteyl.bumerang:bumerang:0.3.0'
+implementation 'com.kokteyl.bumerang:bumerang:0.3.1'
 ```
 
 It is good to initialize it in Application class:
 
 ```java
 public class MyApp extends Application {
-    Bumerang bumerang;
+    
     final String baseAPIUrl = "https://jsonplaceholder.typicode.com/"; 
     /* should end with '/' */
 
     @Override
     public void onCreate() {
         super.onCreate();
-        bumerang = new Bumerang.Builder(getApplicationContext(),baseAPIUrl).build();
+        Bumerang bumerang = new Bumerang.Builder(getApplicationContext(),baseAPIUrl).build();
     }
 }
 ```
@@ -74,7 +74,7 @@ public class MyApp extends Application {
 Advanced:
 
 ```java
-bumerang = new Bumerang.Builder(getApplicationContext(),baseAPIUrl).executor(custom Executor).gson(custom Gson).build();
+Bumerang bumerang = new Bumerang.Builder(getApplicationContext(),baseAPIUrl).executor(custom Executor).gson(custom Gson).build();
 ```
 
 
@@ -124,6 +124,7 @@ You can see sample folder to see other usages.
 
 ```java
 public class TestActivity extends Activity {
+    // It would be better to construct your API in Application class instead of Activity class.
     public MyAPI api = (MyAPI) Bumerang.get().initAPI(MyAPI.class);
     
      @Override
@@ -168,6 +169,24 @@ public class TestActivity extends Activity {
 }
 ```
 
+
+
+#### Cancel a Request:
+
+```java
+final Request request = api.postItem( headerMap, json, new ResponseListener<Response<PostResponseModel>>() {
+	@Override
+	public void onSuccess(Response<PostResponseModel> response) {
+		PostResponseModel respModel = response.getResponse();
+	}
+	
+	@Override
+	public void onError(Response<PostResponseModel> response) {
+	
+        }
+    });
+request.cancel();
+```
 
 
 # Image Loader

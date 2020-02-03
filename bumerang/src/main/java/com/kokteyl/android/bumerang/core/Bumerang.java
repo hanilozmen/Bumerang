@@ -35,6 +35,7 @@ public final class Bumerang {
     private Gson mGson;
     private ConcurrentMap<String, Cacheable> mHttpCache = new ConcurrentHashMap<>();
     private BumerangLifecycleObserver mLifecycleObserver;
+    private Object mProxyInstance;
 
     public ConcurrentMap<String, Cacheable> getHttpCache() {
         if (mHttpCache == null)
@@ -183,23 +184,37 @@ public final class Bumerang {
 
     public <T> T initAPI(final Class<T> service) {
         try {
-            return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class[]{service}, new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    Request request = RequestParser.getRequestObject(method, args, mBaseUrl);
-                    if (request == null || getExecutor() == null) {
-                        BumerangLog.e("Request or Executor is null since Bumerang init failed!");
-                        return null;
-                    } else if (method.getReturnType() != Request.class) {
-                        BumerangLog.e("Defined Interface return type should be Request.  You passed: " + method.getReturnType());
-                        return null;
+            boolean isProxyNull = mProxyInstance == null;
+            if (isProxyNull) {
+                synchronized (Bumerang.class) {
+                    isProxyNull = mProxyInstance == null;
+                    if (isProxyNull) {
+                        mProxyInstance = Proxy.newProxyInstance(service.getClassLoader(), new Class[]{service}, new InvocationHandler() {
+                            @Override
+                            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                                Request request = RequestParser.getRequestObject(method, args, mBaseUrl);
+                                if (request == null || getExecutor() == null) {
+                                    BumerangLog.e("Request or Executor is null since Bumerang init failed!");
+                                    return null;
+                                } else if (method.getReturnType() != Request.class) {
+                                    BumerangLog.e("Defined Interface return type should be Request.  You passed: " + method.getReturnType());
+                                    return null;
+                                }
+                                ResponseListener listener = (ResponseListener) args[args.length - 1];
+                                new BumerangTask<Request<Object>, Object>(listener).executeOnExecutor(getExecutor(), request);
+                                return request;
+                            }
+                        });
                     }
-                    ResponseListener listener = (ResponseListener) args[args.length - 1];
-                    new BumerangTask<Request<Object>, Object>(listener).executeOnExecutor(getExecutor(), request);
-                    return request;
                 }
-            });
+            }
+            if (!isProxyNull)
+                BumerangLog.i("Bumerang is already initialized and initAPI method called previously");
+            return (T) mProxyInstance;
+
         } catch (Exception e) {
+            BumerangLog.e("Undefined Exception: " + e.getMessage());
+
             e.printStackTrace();
         }
         return null;
@@ -246,8 +261,6 @@ public final class Bumerang {
     }
 
 
-
-
     public static final class Builder {
         private String mBaseUrl;
         private ThreadPoolExecutor mExecutor;
@@ -283,7 +296,6 @@ public final class Bumerang {
                 BumerangLog.i("Bumerang init is successful");
                 if (initListener != null)
                     initListener.onSuccess();
-
             }
             return get();
         }

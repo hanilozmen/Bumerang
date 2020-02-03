@@ -41,54 +41,46 @@ public class Request<T> {
     int connectTimeoutMs, readTimeoutMs;
     private String cacheKey;
     private boolean dontCache;
+    private HttpURLConnection httpConnection;
+    private DataOutputStream outputStream;
 
     public Response<T> performRequest(String requestType) {
-        HttpURLConnection conn = null;
+        httpConnection = null;
         Exception e = null;
         StringBuilder response = new StringBuilder();
         int responseCode = -1;
         int cacheDuration = 0;
-        BufferedReader in = null;
-        DataOutputStream outputStream = null;
+        BufferedReader in;
         Map<String, List<String>> responseHeaders = null;
         try {
-            conn = (HttpURLConnection) new URL(getHost()).openConnection();
-            conn.setRequestMethod(requestType);
-
-            conn.setConnectTimeout(connectTimeoutMs);
-            conn.setReadTimeout(readTimeoutMs);
-            conn.setUseCaches(false);
+            httpConnection = (HttpURLConnection) new URL(getHost()).openConnection();
+            httpConnection.setRequestMethod(requestType);
+            httpConnection.setConnectTimeout(connectTimeoutMs);
+            httpConnection.setReadTimeout(readTimeoutMs);
+            httpConnection.setUseCaches(false);
             Set<Map.Entry<String, String>> entrySet = getHeaders().entrySet();
             for (Map.Entry<String, String> header : entrySet) {
-                conn.setRequestProperty(header.getKey(), header.getValue());
+                httpConnection.setRequestProperty(header.getKey(), header.getValue());
             }
             if (requestType.equals("POST")) {
-                conn.setDoOutput(true);
-                outputStream = new DataOutputStream(conn.getOutputStream());
+                httpConnection.setDoOutput(true);
+                outputStream = new DataOutputStream(httpConnection.getOutputStream());
                 if (getBody() != null)
                     outputStream.writeBytes(getBody());
             }
 
-            responseCode = conn.getResponseCode();
-            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            responseCode = httpConnection.getResponseCode();
+            in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
             String line;
             while ((line = in.readLine()) != null) {
                 response.append(line);
             }
-            responseHeaders = conn.getHeaderFields();
-            cacheDuration = getCacheDurationFromHeader(conn);
+            responseHeaders = httpConnection.getHeaderFields();
+            cacheDuration = getCacheDurationFromHeader(httpConnection);
         } catch (Exception exception) {
             e = exception;
         }
-        try {
-
-            if (conn != null) conn.disconnect();
-            if (outputStream != null) {
-                outputStream.flush();
-                outputStream.close();
-            }
-        } catch (Exception ignored) {
-        }
+        closeConnection(false);
         if (e != null) {
             return new Response<T>(BumerangError.HTTP_EXCEPTION, e);
         } else {
@@ -98,8 +90,28 @@ public class Request<T> {
         }
     }
 
+    public boolean cancel() {
+        return closeConnection(true);
+    }
+
+    private boolean closeConnection(boolean externalClose) {
+        try {
+            if (httpConnection != null) httpConnection.disconnect();
+            if (outputStream != null) {
+                outputStream.flush();
+                outputStream.close();
+            }
+            if (externalClose)
+                BumerangLog.i("Request successfully cancelled");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+
+    }
+
     private <T> HTTPCache<T> putToCache(Response<T> response, int cacheDuration) {
-        if(dontCache) return null;
+        if (dontCache) return null;
         long localDate = System.currentTimeMillis();
         long localExpiresAt = localDate + (cacheDuration * 1000);
         if (cacheDuration > 0) {
