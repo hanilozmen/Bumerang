@@ -1,4 +1,5 @@
-<img src="bumerang.png" width="128px"></img> # BUMERANG
+<img src="bumerang.png" width="128px"></img> 
+# BUMERANG
 
 ## A Type-Safe, Model-Based All-In-One Android HTTP Client / ImageLoader
 
