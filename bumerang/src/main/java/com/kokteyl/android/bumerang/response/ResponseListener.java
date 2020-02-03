@@ -1,7 +1,5 @@
 package com.kokteyl.android.bumerang.response;
 
-import android.util.Log;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 public class ResponseListener<T> {
@@ -22,7 +20,7 @@ public class ResponseListener<T> {
         }
     }
 
-    public Type getResponseClassType() {
+    Type getResponseClassType() {
         return responseClassType;
     }
 
