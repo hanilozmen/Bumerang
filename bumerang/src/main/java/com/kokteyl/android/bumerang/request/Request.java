@@ -41,8 +41,8 @@ public class Request<T> {
     int connectTimeoutMs, readTimeoutMs;
     private String cacheKey;
     private boolean dontCache;
-    private HttpURLConnection httpConnection;
-    private DataOutputStream outputStream;
+    private transient HttpURLConnection httpConnection; // to prevent serialization of Gson
+    private transient DataOutputStream outputStream; // to prevent serialization of Gson
 
     public Response<T> performRequest(String requestType) {
         httpConnection = null;

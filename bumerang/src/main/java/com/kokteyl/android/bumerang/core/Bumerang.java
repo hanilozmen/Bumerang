@@ -47,7 +47,7 @@ public final class Bumerang {
         if (mGson == null) {
             synchronized (Bumerang.class) {
                 if (mGson == null) {
-                    mGson = new GsonBuilder().serializeNulls().excludeFieldsWithModifiers(Modifier.STATIC).create();
+                    mGson = new GsonBuilder().serializeNulls().excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT).create();
                 }
             }
         }

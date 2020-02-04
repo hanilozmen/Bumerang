@@ -16,7 +16,7 @@ public class Response<T> {
     private ResponseItem successRawItem;
     private Map<String, List<String>> responseHeaders;
     private Response<T> cachedResponse;
-    private ResponseListener mListener;
+    private transient ResponseListener mListener;
     private boolean isFromCache;
 
     public static int MIN_SUCCESS_HTTP_CODE = 200;
