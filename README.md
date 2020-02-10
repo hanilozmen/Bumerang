@@ -38,7 +38,7 @@ Note: Current status is beta now. Bumerang is open to new contributors.
 
 #### Initialization of Bumerang:
 
-Library hosted by jcenter. Thanks to the Bintray. You need to have jcenter() repo inside root level build.gradle
+Library hosted by jcenter thanks to  Bintray. You need to have jcenter() repo inside root level build.gradle
 
     allprojects {
         repositories {
@@ -52,8 +52,8 @@ Library hosted by jcenter. Thanks to the Bintray. You need to have jcenter() rep
 Add it to your app's gradle file:
 
 ```groovy
-implementation 'com.google.code.gson:gson:2.8.6'
 implementation 'com.kokteyl.bumerang:bumerang:0.3.2'
+implementation 'com.google.code.gson:gson:2.8.6'
 ```
 
 It is good to initialize it in Application class:
