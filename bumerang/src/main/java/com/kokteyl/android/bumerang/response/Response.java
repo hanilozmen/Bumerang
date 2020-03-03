@@ -3,6 +3,7 @@ package com.kokteyl.android.bumerang.response;
 import com.kokteyl.android.bumerang.core.Bumerang;
 import com.kokteyl.android.bumerang.core.BumerangError;
 import com.kokteyl.android.bumerang.core.BumerangLog;
+import com.kokteyl.android.bumerang.core.ResponseListener;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
@@ -15,9 +16,10 @@ public class Response<T> {
     private ResponseItem errorRawItem;
     private ResponseItem successRawItem;
     private Map<String, List<String>> responseHeaders;
-    private Response<T> cachedResponse;
+    private T cachedResponse;
+    private Type mResponseType;
     private transient ResponseListener mListener;
-    private boolean isFromCache;
+    private boolean forwardToFailCallback;
 
     public static int MIN_SUCCESS_HTTP_CODE = 200;
     public static int MAX_SUCCESS_HTTP_CODE = 299;
@@ -26,23 +28,34 @@ public class Response<T> {
         return errorRawItem == null && successRawItem != null;
     }
 
+    public Type getResponseType() {
+        return mResponseType;
+    }
+
+    public void setResponseType(Type type) {
+        mResponseType = type;
+    }
+
     public boolean is200() {
         return isSuccess() && successRawItem.httpCode == 200;
     }
 
-    public boolean isFromCache() {
-        return isFromCache;
+    public boolean isForwardToFailCallback() {
+        return forwardToFailCallback;
     }
 
-    public void setFromCache(boolean fromCache) {
-        isFromCache = fromCache;
+    public void forwardToFailCallback(boolean forward) {
+        forwardToFailCallback = forward;
     }
 
     public void setListener(ResponseListener listener) {
+        if (mListener == null) return;
         mListener = listener;
     }
 
-    private Response() {}
+
+    private Response() {
+    }
 
     public Response(String rawResponse, int responseCode, Map<String, List<String>> responseHeaders) {
         this.responseHeaders = responseHeaders;
@@ -60,23 +73,29 @@ public class Response<T> {
         errorRawItem = new ResponseItem(error.getMessage(), error.getCode(), exception);
     }
 
-    public void setCachedResponse(Response<T> cachedResponse) {
-        this.cachedResponse = cachedResponse;
+    public void setCachedResponse(Type type) {
+        mResponseType = type;
+        this.cachedResponse = getResponseInternal(type);
     }
 
     public T getResponse() {
+        return getResponseInternal(getResponseType());
+    }
+
+    private T getResponseInternal(Type type) {
         if (successRawItem == null) return null;
         try {
-            Type responseClassType = mListener.getResponseClassType();
-            return Bumerang.get().gson().fromJson(successRawItem.getRawResponse(), responseClassType);
+            if (type == null)
+                throw new RuntimeException("Response type is null");
+            return Bumerang.get().gson().fromJson(successRawItem.getRawResponse(), getResponseType());
         } catch (Exception e) {
             BumerangLog.w("Error while converting response body!", e);
             return null;
         }
     }
 
-    public Response<T> getCache() {
-        return this.cachedResponse;
+    public T getCachedResponse() {
+        return cachedResponse;
     }
 
     public ResponseItem getSuccessRawItem() {

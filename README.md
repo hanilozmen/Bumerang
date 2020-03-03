@@ -53,7 +53,7 @@ Add it to your app's gradle file:
 
 ```groovy
 implementation 'com.google.code.gson:gson:2.8.6'
-implementation 'com.kokteyl.bumerang:bumerang:0.3.2'
+implementation 'com.kokteyl.bumerang:bumerang:0.4.0'
 ```
 
 It is good to initialize it in Application class:
@@ -147,8 +147,8 @@ public class TestActivity extends Activity {
             @Override
             public void onError(Response<PostResponseModel> response) {
                 // Distinctive feature! You can use your last successful response object
-                if(response.getCache() != null) {
-                   PostResponseModel cachedObj = response.getCache().getResponse();
+                if(response.getCachedResponse() != null) {
+                   PostResponseModel cachedObj = response.getCachedResponse();
                 }
             }
         });

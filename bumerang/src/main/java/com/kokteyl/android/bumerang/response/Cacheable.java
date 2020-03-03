@@ -1,5 +1,6 @@
 package com.kokteyl.android.bumerang.response;
 
+
 public interface Cacheable {
     String putToCache();
     Cacheable getFromCache();

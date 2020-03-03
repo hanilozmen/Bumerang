@@ -38,6 +38,11 @@ public class BumerangPrefs {
         return instance;
     }
 
+    final void clear() {
+        if(editor !=null)
+            editor.clear().apply();
+    }
+
     public final <T> String put(String key, T value) {
         try {
             if (key == null || key.trim().equals("")) return "";

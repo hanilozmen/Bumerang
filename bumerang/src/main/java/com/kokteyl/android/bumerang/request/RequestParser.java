@@ -47,7 +47,6 @@ public final class RequestParser {
             boolean formUrlEncoded = method.getAnnotation(FormURLEncoded.class) != null;
             boolean dontCache = method.getAnnotation(NoCache.class) != null;
 
-
             if (method.getAnnotation(BaseUrl.class) != null)
                 baseUrl = method.getAnnotation(BaseUrl.class).value();
 

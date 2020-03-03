@@ -2,14 +2,15 @@ package com.kokteyl.bumerang.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.kokteyl.android.bumerang.core.Bumerang;
+import com.kokteyl.android.bumerang.core.ResponseListener;
 import com.kokteyl.android.bumerang.request.Request;
 import com.kokteyl.android.bumerang.response.Response;
-import com.kokteyl.android.bumerang.response.ResponseListener;
 import com.kokteyl.bumerang.R;
 import com.kokteyl.bumerang.sample.network.MyAPI;
 import com.kokteyl.bumerang.sample.network.PostResponseModel;
@@ -38,6 +39,7 @@ public class TestActivity extends Activity {
         testImageView();
     }
 
+
     void testImageView() {
         String imageUrl = "https://img.fanatik.com.tr/img/78/740x418/5c35f72c66a97cf10843a95f.jpg";
         // Default ImageView Usage
@@ -50,9 +52,9 @@ public class TestActivity extends Activity {
     }
 
     void testRequests() {
-        RequestModel model = new RequestModel("ModelTit", 2019, new RequestModel.SubItem(Arrays.asList("test1", "test2"), 1001, true));
+        RequestModel model = new RequestModel("ModelTitle", 2019, new RequestModel.SubItem(Arrays.asList("test1", "test2"), 1001, true));
         JsonObject sampleJson = new JsonObject();
-        sampleJson.addProperty("title", "JsonTit");
+        sampleJson.addProperty("title", "JsonTitle");
         sampleJson.addProperty("year", 0);
         getItem(model);
         getItems();
@@ -64,16 +66,20 @@ public class TestActivity extends Activity {
     }
 
     void getItem(RequestModel model) {
-        Request request = api.getItem("todo_1", null, "1", new ResponseListener<Response<ResponseModel>>() {
+        Request request = api.getItem(null, "1", new ResponseListener<Response<ResponseModel>>() {
             @Override
             public void onSuccess(Response<ResponseModel> response) {
                 ResponseModel respModel = response.getResponse();
+                responseTextView.setText(respModel.toString());
             }
 
             @Override
             public void onError(Response<ResponseModel> response) {
+                ResponseModel cache = response.getCachedResponse();
             }
         });
+        requestTextView.setText(request.toString());
+
     }
 
     void getItems() {
@@ -85,6 +91,7 @@ public class TestActivity extends Activity {
 
             @Override
             public void onError(Response<List<ResponseModel>> response) {
+                Log.i("onError", response.toString());
             }
         });
     }
@@ -96,17 +103,16 @@ public class TestActivity extends Activity {
             @Override
             public void onSuccess(Response<PostResponseModel> response) {
                 PostResponseModel respModel = response.getResponse();
-                responseTextView.setText(response.toString());
+
             }
 
             @Override
             public void onError(Response<PostResponseModel> response) {
-                if (response.getCache() != null) {
-                    PostResponseModel cachedObj = response.getCache().getResponse();
+                if (response.getCachedResponse() != null) {
+                    PostResponseModel cachedObj = response.getCachedResponse();
                 }
             }
         });
-        requestTextView.setText(request.toString());
     }
 
     void postItemFormEncoded(RequestModel model) {
@@ -147,4 +153,6 @@ public class TestActivity extends Activity {
             }
         });
     }
+
+
 }

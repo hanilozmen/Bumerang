@@ -31,8 +31,12 @@ public class Request<T> {
     public static final String CONTENT_TYPE_KEY = "Content-Type";
     public static final String ACCEPT_KEY = "Accept";
     public static final String ACCEPT_CHARSET_KEY = "Accept-Charset";
+    public static final String ACCEPT_LANGUAGE =  "Accept-Language";
+
+
 
     public static final String JSON_CONTENT_VALUE = "application/json";
+    public static final String CHARSET_SUFFIX = "; charset=UTF-8";
     public static final String URL_ENCODED_CONTENT_VALUE = "application/x-www-form-urlencoded";
 
     private JsonElement params;
@@ -66,7 +70,7 @@ public class Request<T> {
                 httpConnection.setDoOutput(true);
                 outputStream = new DataOutputStream(httpConnection.getOutputStream());
                 if (getBody() != null)
-                    outputStream.writeBytes(getBody());
+                    outputStream.write(getBody().getBytes(UTF_8)); // IMPORTANT NOTE: Do not use WriteBytes(). Must have charset
             }
 
             responseCode = httpConnection.getResponseCode();
@@ -245,7 +249,7 @@ public class Request<T> {
     }
 
     public String getTypeName() {
-        throw new RuntimeException("type name is null");
+       return "Typeless";
     }
 
     public String getHost() {
@@ -292,7 +296,11 @@ public class Request<T> {
             headers = new ConcurrentHashMap<String, String>();
             headers.put(ACCEPT_KEY, JSON_CONTENT_VALUE);
             headers.put(ACCEPT_CHARSET_KEY, UTF_8);
-            headers.put(CONTENT_TYPE_KEY, JSON_CONTENT_VALUE);
+            headers.put(CONTENT_TYPE_KEY, JSON_CONTENT_VALUE + CHARSET_SUFFIX);
+            try {
+                headers.put(ACCEPT_LANGUAGE, Locale.getDefault().toString().toLowerCase());
+            }catch (Exception e) {
+            }
         }
         return headers;
     }

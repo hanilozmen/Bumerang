@@ -1,4 +1,4 @@
-package com.kokteyl.android.bumerang.response;
+package com.kokteyl.android.bumerang.core;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

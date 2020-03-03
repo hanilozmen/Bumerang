@@ -14,7 +14,6 @@ import com.kokteyl.android.bumerang.request.Request;
 import com.kokteyl.android.bumerang.request.RequestParser;
 import com.kokteyl.android.bumerang.response.Cacheable;
 import com.kokteyl.android.bumerang.response.HTTPCache;
-import com.kokteyl.android.bumerang.response.ResponseListener;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -22,7 +21,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -138,6 +136,11 @@ public final class Bumerang {
             }
         }
         return mInstance;
+    }
+
+    public void clearCache() {
+        if( BumerangPrefs.instance()!=null)
+            BumerangPrefs.instance().clear();
     }
 
     public static boolean putToCache(String key, Cacheable cacheObject) {

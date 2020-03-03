@@ -10,20 +10,20 @@ public class PostRequest<T> extends Request<T> {
 
     private boolean mFormUrlEncoded;
 
-    PostRequest(String customCacheKey, String host, Map<String, String> headers, JsonElement params, boolean dontCache ,boolean formUrlEncoded, int... timeoutValues) {
-        setCacheKey(customCacheKey);
+    PostRequest(String customCacheKey, String host, Map<String, String> headers, JsonElement params, boolean dontCache, boolean formUrlEncoded, int... timeoutValues) {
         setmFormUrlEncoded(formUrlEncoded);
         setHost(host);
         setParams(params);
         setHeaders(headers);
         setTimeout(timeoutValues);
         setDontCache(dontCache);
+        setCacheKey(customCacheKey);
     }
 
     private void setmFormUrlEncoded(boolean mFormUrlEncoded) {
         this.mFormUrlEncoded = mFormUrlEncoded;
         if (mFormUrlEncoded)
-            addHeader(CONTENT_TYPE_KEY, URL_ENCODED_CONTENT_VALUE);
+            addHeader(CONTENT_TYPE_KEY, URL_ENCODED_CONTENT_VALUE + CHARSET_SUFFIX);
     }
 
     @Override

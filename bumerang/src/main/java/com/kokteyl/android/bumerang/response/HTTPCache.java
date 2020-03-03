@@ -4,6 +4,8 @@ import com.kokteyl.android.bumerang.core.Bumerang;
 import com.kokteyl.android.bumerang.core.BumerangPrefs;
 import com.kokteyl.android.bumerang.request.Request;
 
+import java.lang.reflect.Type;
+
 public class HTTPCache<T> implements Cacheable {
     Request<T> request;
     Response<T> response;
@@ -41,7 +43,9 @@ public class HTTPCache<T> implements Cacheable {
 
     @Override
     public String toString() {
-        return Bumerang.get().gson().toJson(this);
+        if(response !=null)
+            return response.toString();
+        return "";
     }
 
 

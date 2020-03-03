@@ -8,13 +8,13 @@ import java.util.Map;
 public class GetRequest<T> extends Request<T> {
 
     GetRequest(String customCacheKey, String host, Map<String, String> headers, JsonElement params, boolean dontCache, int... timeoutValues) {
-        setCacheKey(customCacheKey);
         setParams(params);
         setHeaders(headers);
         String encodedParams = isParamsEmpty() ? "" : new String(getBody());
         setHost(host + encodedParams);
         setTimeout(timeoutValues);
         setDontCache(dontCache);
+        setCacheKey(customCacheKey);
     }
 
 
