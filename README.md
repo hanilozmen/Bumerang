@@ -38,7 +38,7 @@ Note: Current status is beta now. Bumerang is open to new contributors.
 
 #### Initialization of Bumerang:
 
-Library hosted by jcenter. Thanks to the Bintray. You need to have jcenter() repo inside root level build.gradle
+Library hosted by jcenter thanks to  Bintray. You need to have jcenter() repo inside root level build.gradle
 
     allprojects {
         repositories {
@@ -147,8 +147,8 @@ public class TestActivity extends Activity {
             @Override
             public void onError(Response<PostResponseModel> response) {
                 // Distinctive feature! You can use your last successful response object
-                if(response.getCachedResponse() != null) {
-                   PostResponseModel cachedObj = response.getCachedResponse();
+                if(response.getCache() != null) {
+                   PostResponseModel cachedObj = response.getCache().getResponse();
                 }
             }
         });
