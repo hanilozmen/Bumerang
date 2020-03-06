@@ -8,8 +8,10 @@ import com.kokteyl.android.bumerang.core.BumerangLog;
 import com.kokteyl.android.bumerang.response.HTTPCache;
 import com.kokteyl.android.bumerang.response.Response;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -22,8 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class Request<T> {
-    public static final int READ_TIMEOUT_DEFAULT = 10 * 1000;
-    public static final int CONNECT_TIMEOUT_DEFAULT = 10 * 1000;
+    public static final int READ_TIMEOUT_DEFAULT = 20 * 1000;
+    public static final int CONNECT_TIMEOUT_DEFAULT = 20 * 1000;
     public static final int MIN_TIMEOUT_DEFAULT = 50;
 
 
@@ -31,8 +33,7 @@ public class Request<T> {
     public static final String CONTENT_TYPE_KEY = "Content-Type";
     public static final String ACCEPT_KEY = "Accept";
     public static final String ACCEPT_CHARSET_KEY = "Accept-Charset";
-    public static final String ACCEPT_LANGUAGE =  "Accept-Language";
-
+    public static final String ACCEPT_LANGUAGE = "Accept-Language";
 
 
     public static final String JSON_CONTENT_VALUE = "application/json";
@@ -51,10 +52,11 @@ public class Request<T> {
     public Response<T> performRequest(String requestType) {
         httpConnection = null;
         Exception e = null;
-        StringBuilder response = new StringBuilder();
+        StringBuilder responseStr = new StringBuilder("");
         int responseCode = -1;
         int cacheDuration = 0;
-        BufferedReader in;
+        BufferedReader bufferedReader = null;
+        InputStream inputStream = null;
         Map<String, List<String>> responseHeaders = null;
         try {
             httpConnection = (HttpURLConnection) new URL(getHost()).openConnection();
@@ -74,43 +76,50 @@ public class Request<T> {
             }
 
             responseCode = httpConnection.getResponseCode();
-            in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+            if (httpConnection.getErrorStream() == null) {
+                inputStream = new BufferedInputStream(httpConnection.getInputStream());
+            } else {
+                inputStream = new BufferedInputStream(httpConnection.getErrorStream());
+            }
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, UTF_8));
             String line;
-            while ((line = in.readLine()) != null) {
-                response.append(line);
+            while ((line = bufferedReader.readLine()) != null) {
+                responseStr.append(line);
             }
             responseHeaders = httpConnection.getHeaderFields();
             cacheDuration = getCacheDurationFromHeader(httpConnection);
+
         } catch (Exception exception) {
             e = exception;
         }
-        closeConnection(false);
-        if (e != null) {
-            return new Response<T>(BumerangError.HTTP_EXCEPTION, e);
-        } else {
-            Response<T> responseObj = new Response<T>(response.toString(), responseCode, responseHeaders);
+        Response responseObj = new Response<T>(responseStr.toString(), responseCode, responseHeaders, e);
+        if (Response.isBetweenMinAndMaxSuccessCodeRange(responseCode)) {
             putToCache(responseObj, cacheDuration);
-            return responseObj;
         }
+        closeConnection(bufferedReader, inputStream);
+        return responseObj;
     }
 
-    public boolean cancel() {
-        return closeConnection(true);
+    public void cancel() {
+        BumerangLog.i("Request successfully cancelled");
+        closeConnection(null, null);
     }
 
-    private boolean closeConnection(boolean externalClose) {
+    private void closeConnection(BufferedReader bufferedReader, InputStream inputStream) {
         try {
-            if (httpConnection != null) httpConnection.disconnect();
+            if (httpConnection != null)
+                httpConnection.disconnect();
             if (outputStream != null) {
                 outputStream.flush();
                 outputStream.close();
             }
-            if (externalClose)
-                BumerangLog.i("Request successfully cancelled");
+            /*if (bufferedReader != null)
+                bufferedReader.close();
+            if (inputStream != null)
+                inputStream.close();*/
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
 
     }
 
@@ -249,7 +258,7 @@ public class Request<T> {
     }
 
     public String getTypeName() {
-       return "Typeless";
+        return "Typeless";
     }
 
     public String getHost() {
@@ -299,7 +308,7 @@ public class Request<T> {
             headers.put(CONTENT_TYPE_KEY, JSON_CONTENT_VALUE + CHARSET_SUFFIX);
             try {
                 headers.put(ACCEPT_LANGUAGE, Locale.getDefault().toString().toLowerCase());
-            }catch (Exception e) {
+            } catch (Exception e) {
             }
         }
         return headers;

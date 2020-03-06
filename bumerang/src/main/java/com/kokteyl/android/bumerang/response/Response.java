@@ -57,9 +57,16 @@ public class Response<T> {
     private Response() {
     }
 
-    public Response(String rawResponse, int responseCode, Map<String, List<String>> responseHeaders) {
+    public Map<String, List<String>> getResponseHeaders() {
+        return responseHeaders;
+    }
+
+    public Response(String rawResponse, int responseCode, Map<String, List<String>> responseHeaders, Exception exception) {
         this.responseHeaders = responseHeaders;
-        if (responseCode >= MIN_SUCCESS_HTTP_CODE && responseCode <= MAX_SUCCESS_HTTP_CODE) {
+        if(exception !=null){
+            exception.printStackTrace();
+        }
+        if (isBetweenMinAndMaxSuccessCodeRange(responseCode) && exception == null) {
             successRawItem = new ResponseItem(rawResponse, responseCode);
             errorRawItem = null;
         } else {
@@ -68,7 +75,11 @@ public class Response<T> {
         }
     }
 
-    public Response(BumerangError error, Throwable exception) {
+    public static boolean isBetweenMinAndMaxSuccessCodeRange(int responseCode) {
+        return responseCode >= MIN_SUCCESS_HTTP_CODE && responseCode <= MAX_SUCCESS_HTTP_CODE;
+    }
+
+    public Response(BumerangError error, String rawErrorBody, Throwable exception) {
         successRawItem = null;
         errorRawItem = new ResponseItem(error.getMessage(), error.getCode(), exception);
     }
@@ -125,7 +136,7 @@ public class Response<T> {
         public String toString() {
             String exceptionStr = "";
             if (exception instanceof FileNotFoundException) {
-                exceptionStr = "Server returned 404";
+                exceptionStr = "FileNotFoundException";
             } else if (exception != null) {
                 exceptionStr = exception.toString();
             }

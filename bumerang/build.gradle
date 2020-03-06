@@ -1,8 +1,8 @@
 apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'com.android.library'
 
-project.ext.versionName = '0.4.0'
-project.ext.versionCode = 2
+project.ext.versionName = '0.4.2'
+project.ext.versionCode = 42
 
 android {
     compileSdkVersion 29
