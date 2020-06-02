@@ -8,6 +8,8 @@
 
 Bumerang is a Java based, Android HTTP client which is inspired by Retrofit and Volley. It has additional features like ImageView loading and custom cache key/timeout values for network requests. Main aim of this library is ease of use with solidity. It automatically converts http responses to your Java/Kotlin models (through Gson library), so you can focus on the functionality of your app. 
 
+It is listed under REST category of android-arsenal : https://android-arsenal.com/details/1/8034
+
 Note: Current status is beta now. Bumerang is open to new contributors.
 
 ## Features
