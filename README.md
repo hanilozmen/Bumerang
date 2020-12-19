@@ -3,7 +3,7 @@
 <img src="bumerang.png" width="84px"/>
 
 # Bumerang
-## A Type-Safe, Model-Based All-In-One Android HTTP Client / ImageLoader
+## A Type-Safe, Model-Based All-In-One Android REST API Client / ImageLoader
 
 
 
