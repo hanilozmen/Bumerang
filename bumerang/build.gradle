@@ -1,16 +1,16 @@
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.github.panpf.bintray-publish'
 apply plugin: 'com.android.library'
 
-project.ext.versionName = '0.4.2'
-project.ext.versionCode = 42
+project.ext.versionName = '1.0.1'
+project.ext.versionCode = 44
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode project.versionCode
         versionName project.versionName
 
