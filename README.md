@@ -128,11 +128,12 @@ You can see sample folder to see other usages.
 ```java
 public class TestActivity extends Activity {
     // It would be better to construct your API in Application class instead of Activity class.
-    public MyAPI api = (MyAPI) Bumerang.get().initAPI(MyAPI.class);
+    public MyAPI api; 
     
      @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        api = (MyAPI) Bumerang.get().initAPI(MyAPI.class); // you must initialize your endpoints before use.
         testPost();
         testGet();
     }
