@@ -213,7 +213,7 @@ Bumerang.get().loadImage(imageView, imageUrl);
 @BaseUrl
 
 ```java
-@BaseUrl("http://api.otherapi.com/") // you can override baseUrl which you gave at init.
+@BaseUrl("http://api.otherapi.com/") // you can override baseUrl which you provided at library initialization for specific endpoints.
 @POST("posts/{id}")
 public Request testEndpoint(@Path("id") String id, ResponseListener<Response<ResponseModel>> listener);
 ```
