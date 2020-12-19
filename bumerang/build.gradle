@@ -32,7 +32,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 }
 
-// gradlew clean build bintrayUpload -PbintrayUser=username -PbintrayKey=apikey -PdryRun=false
+// gradlew clean build bintrayUpload -PbintrayUser=hanilozmen -PbintrayKey=apikey -PdryRun=false
 
 publish {
 
