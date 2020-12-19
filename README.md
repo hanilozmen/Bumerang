@@ -12,8 +12,6 @@ Bumerang is a Java based, Android HTTP client which is inspired by Retrofit and 
 
 It is listed under REST category of android-arsenal : https://android-arsenal.com/details/1/8034
 
-Note: Current status is beta now. Bumerang is open to new contributors.
-
 ## Features
 
 - GET, POST, PUT, DELETE requests supported.
