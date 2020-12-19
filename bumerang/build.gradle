@@ -1,5 +1,5 @@
-apply plugin: 'com.github.panpf.bintray-publish'
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.panpf.bintray-publish'
 
 project.ext.versionName = '1.0.1'
 project.ext.versionCode = 44
