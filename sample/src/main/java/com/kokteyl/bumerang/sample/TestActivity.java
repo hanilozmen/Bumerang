@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.kokteyl.android.bumerang.core.Bumerang;
 import com.kokteyl.android.bumerang.core.ResponseListener;
@@ -27,12 +28,13 @@ public class TestActivity extends Activity {
     TextView requestTextView;
     TextView responseTextView;
 
-    MyAPI api = (MyAPI) Bumerang.get().initAPI(MyAPI.class);
+    MyAPI api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+        api = (MyAPI) Bumerang.get().initAPI(MyAPI.class);
         requestTextView = findViewById(R.id.request);
         responseTextView = findViewById(R.id.response);
         testRequests();
